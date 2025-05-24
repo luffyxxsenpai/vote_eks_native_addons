@@ -23,6 +23,8 @@
 
 # DEPLOYMENT
 **make sure the pod identity is already setup**
+> To use pod identity, look for it in addons and  enable it from console 
+
 **create the namespace**
 `kubectl apply -f vote-namespace.yaml`
 
