@@ -15,7 +15,7 @@
   - 💾 **EBS CSI Driver** for dynamic PostgreSQL volume provisioning  
   - 🔑 **Pod Identity** for secure AWS resource access  
 
-
+---
 ### Prerequisites
 - AWS Account with EKS cluster (1.24+) configured with pod identity addon
 - `kubectl`, `awscli`, and `helm` configured
@@ -31,7 +31,7 @@
 
 **create the redis deployment with its service**
 `kubectl apply -f vote-redis.yaml`
-
+---
 ## postgres deployment using AWS EBS volumes
 
 ### setup EBS CSI for Persistant Volume for PostgresDB
@@ -75,7 +75,7 @@
 `kubectl apply -f voting-worker.yaml`
 `kubectl apply -f voting-vote.yaml`
 `kubectl apply -f voting-result.yaml`
-
+---
 
 ### SETUP ExternalDNS for automatic Route53 DNS record update
 - when we create ingress using aws alb, we get a dns record for our application 
@@ -109,7 +109,7 @@
         --set podIdentity.enabled=true \
         --set podIdentity.assumeRoleArn=arn:aws:iam::ACCOUNT_ID:role/ExternalDNSRole
   ```
-
+---
 ### Setup ingress With SSL using AWS ALB controller
 - when using AWS ALB controller for ingress, we dont need to setup any certmanager in our cluster since SSL Termination is happening at LoadBalancer level and loadbalancer forwards the request in HTTP.
 - AWS ALB forwards the traffic directly to POD since aws VPC CNI is used in eks so PODS recieve IP from VPC CIDR.
