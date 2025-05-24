@@ -179,8 +179,8 @@
 
 
 # FURTHER IMPROVEMENTS TO-DO
-[] add resource limit for applications
-[] add liveness probes 
-[] add aws secret manager controller for secrets
-[] terraform support
-[] argocd implementation
+- [ ] add resource limit for applications
+- [ ] add liveness probes 
+- [ ] add aws secret manager controller for secrets
+- [ ] terraform support
+- [ ] argocd implementation
