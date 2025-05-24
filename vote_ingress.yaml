@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: voting-ingress
+  namespace: vote
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-south-1:account-id:certificate/53e48-78af-4929-b9b1-5a4601bd0a78
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    external-dns.alpha.kubernetes.io/hostname: vote.homelain.click, result.homelain.click
+spec:
+  ingressClassName: alb
+  rules:
+    - host: vote.homelain.click
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: voting-vote-svc
+                port:
+                  number: 8080
+    - host: result.homelain.click
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: voting-result-svc
+                port:
+                  number: 8081

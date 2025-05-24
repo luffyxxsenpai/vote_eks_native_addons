@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-result
+  namespace: vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-result 
+  template:
+    metadata:
+      labels:
+        app: voting-result
+    spec:
+      containers:
+      - name: voting-result
+        image: luffyxxsenpai/voting-result:v1
+        ports:
+          - containerPort: 8081
+        env:
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_HOST
+        - name: POSTGRES_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_DATABASE
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_PORT
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_PASSWORD
+
+---
+# Result service 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: voting-result-svc
+  namespace: vote
+spec:
+  selector:
+    app: voting-result
+  ports:
+  - protocol: TCP
+    port: 8081
+    targetPort: 8081
+  type: ClusterIP

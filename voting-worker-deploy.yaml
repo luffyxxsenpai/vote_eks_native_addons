@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-worker
+  namespace: vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-worker
+  template:
+    metadata:
+      labels:
+        app: voting-worker 
+    spec:
+      containers:
+      - name: voting-worker
+        image: luffyxxsenpai/voting-worker:v1
+        ports:
+          - containerPort: 5432
+          - containerPort: 6379
+        env:
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_HOST
+        - name: POSTGRES_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_DATABASE
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_PORT
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pg-secret
+              key: POSTGRES_PASSWORD
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: REDIS_HOST

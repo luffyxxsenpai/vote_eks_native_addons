@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: voting-vote
+  namespace: vote
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: voting-vote
+  template:
+    metadata:
+      labels:
+        app: voting-vote
+    spec:
+      containers:
+      - name: voting-vote
+        image: luffyxxsenpai/voting-vote:v1
+        ports:
+          - containerPort: 8080
+        env:
+        - name: REDIS_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: REDIS_HOST
+        - name: REDIS_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: REDIS_PORT
+        - name: REDIS_DB
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: REDIS_DB
+        - name: OPTION_A
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: OPTION_A
+        - name: OPTION_B
+          valueFrom:
+            configMapKeyRef:
+              name: vote-cm
+              key: OPTION_B
+---
+# vote service 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: voting-vote-svc
+  namespace: vote
+spec:
+  selector:
+    app: voting-vote
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+  type: ClusterIP
+
