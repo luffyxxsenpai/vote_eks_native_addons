@@ -18,6 +18,13 @@ spec:
         image: luffyxxsenpai/voting-result:v1
         ports:
           - containerPort: 8081
+        resources:
+          limits:
+            cpu: "500m"    # 0.5 CPU cores
+            memory: "256Mi" # 256 Megabytes
+          requests:
+            cpu: "100m"    # 0.1 CPU cores
+            memory: "128Mi" # 128 Megabytes
         env:
         - name: POSTGRES_HOST
           valueFrom:
