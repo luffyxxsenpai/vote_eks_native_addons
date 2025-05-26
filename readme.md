@@ -9,6 +9,7 @@
 
 ## 🌟 Key Features
 - **AWS Infrastructure**  
+  - **AWS ECR** for a secure private container registory 
   - **ALB Ingress Controller** with IP-mode routing  
   - **TLS Termination** using AWS ACM certificates  
   - **ExternalDNS** for automatic Route53 record management  
@@ -35,6 +36,21 @@
 **create the redis deployment with its service**
 `kubectl apply -f vote-redis.yaml`
 ---
+## ECR Private repository access using pod identity assosiation
+- create an iam role with permission policy `iam_ECR.json` and bind them together
+- create a service account using `ecr_SA.yaml`
+- set up pod identity assosiation 
+    ```bash
+  aws eks create-pod-identity-association \
+  --cluster-name YOUR_CLUSTER \
+  --namespace vote \
+  --service-account ecr-vote-access-sa \
+  --role-arn arn:aws:iam::ACCOUNT_ID:role/YOUR_ECR_ROLE
+    ```
+- now we just have to mention our image uri without any credentials just a serviceaccount tag 
+
+
+
 ## Secrets setup using Secrets store csi driver to access secrets from AWS SECRETS MANAGER
 
 ### setup pod identity for authentication and access of secrets form aws secrets manager

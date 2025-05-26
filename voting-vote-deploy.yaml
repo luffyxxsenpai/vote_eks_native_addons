@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: voting-vote
-        image: luffyxxsenpai/voting-vote:v1
+        image: 537124957197.dkr.ecr.ap-south-1.amazonaws.com/vote/frontend:latest
         ports:
           - containerPort: 8080
         resources:

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: voting-worker
-        image: luffyxxsenpai/voting-worker:v1
+        image: 537124957197.dkr.ecr.ap-south-1.amazonaws.com/vote/worker:latest
         ports:
           - containerPort: 5432
           - containerPort: 6379
