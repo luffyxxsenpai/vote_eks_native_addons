@@ -241,4 +241,5 @@
 # FURTHER IMPROVEMENTS TO-DO
 - [x] add resource limit for applications
 - [ ] add liveness probes 
+- [x] migrate from dockerhub to ECR
 - [x] add aws secret manager controller for secrets
