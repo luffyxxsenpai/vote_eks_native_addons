@@ -29,8 +29,8 @@
 **create the namespace**
 `kubectl apply -f vote-namespace.yaml`
 
-**apply the configmap and secret manifest**
-`kubectl apply -f vote-configmap.yaml && kubectl apply -f vote-secret.yaml`
+**apply the configmap**
+`kubectl apply -f vote-configmap.yaml`
 
 **create the redis deployment with its service**
 `kubectl apply -f vote-redis.yaml`
