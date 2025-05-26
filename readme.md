@@ -9,11 +9,12 @@
 
 ## 🌟 Key Features
 - **AWS Infrastructure**  
-  - 🚀 **ALB Ingress Controller** with IP-mode routing  
-  - 🔒 **TLS Termination** using AWS ACM certificates  
-  - 📡 **ExternalDNS** for automatic Route53 record management  
-  - 💾 **EBS CSI Driver** for dynamic PostgreSQL volume provisioning  
-  - 🔑 **Pod Identity** for secure AWS resource access  
+  - **ALB Ingress Controller** with IP-mode routing  
+  - **TLS Termination** using AWS ACM certificates  
+  - **ExternalDNS** for automatic Route53 record management  
+  - **EBS CSI Driver** for dynamic PostgreSQL volume provisioning  
+  - **AWS Secrets Manager** for storing kubenetes secrets securly
+  - **Pod Identity** for secure AWS resource access  
 
 ---
 ### Prerequisites
@@ -34,6 +35,47 @@
 **create the redis deployment with its service**
 `kubectl apply -f vote-redis.yaml`
 ---
+## Secrets setup using Secrets store csi driver to access secrets from AWS SECRETS MANAGER
+
+### setup pod identity for authentication and access of secrets form aws secrets manager
+- create an iam policy to allow access to aws secrets store. use the `iam_secretsAWS.json` for policy
+- create an iam role for EKS service -> pod identity and attach the previously created role to this account
+- create a service account using the `aws_sec_SA.yaml` 
+- enable pod idnetity 
+    ```bash
+      aws eks create-pod-identity-association \
+        --cluster-name YOUR_CLUSTER_NAME \
+        --namespace vote \
+        --service-account vote-secrets-sa \
+        --role-arn arn:aws:iam::YOUR_ACCOUNT_ID:role/EKSSecretsAccessRole
+    ```
+#### install secrets store csi driver and provider
+- install the secrets store driver
+- this will be done it 2 parts where we install the driver and aws provider
+    - secrets-store-csi-driver provides the native k8s implementaiton 
+    - aws provider translates aws secret requests to secret manger api calls 
+
+  ```bash
+  helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+  helm install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --namespace kube-system \
+  --set syncSecret.enabled=true \
+  --set enableSecretRotation=true
+  ```
+- install the aws provider
+    ```bash
+        helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
+        helm install -n kube-system aws-provider aws-secrets-manager/secrets-store-csi-driver-provider-aws
+    ```
+- verify the installation
+    ```bash
+      kubectl get pods -n kube-system -l "app in (secrets-store-csi-driver, secrets-store-csi-driver-provider-aws)"
+    ```
+**now we have to create secretproviderclass for each application that needs secrets in the same ns as application**
+- we can either use volume mounts or k8s native secrets approach where it will create a default secrets in cluster 
+- `kubectl apply -f vote_secretclass.yaml`
+- it will fetch the secrets, and create a k8s native secrect which we can use to apply secrets as env variables in pods instead of volume mounts 
+
+
 ## postgres deployment using AWS EBS volumes
 
 ### setup EBS CSI for Persistant Volume for PostgresDB
@@ -181,8 +223,6 @@
 
 
 # FURTHER IMPROVEMENTS TO-DO
-- [ x ] add resource limit for applications
+- [x] add resource limit for applications
 - [ ] add liveness probes 
-- [ ] add aws secret manager controller for secrets
-- [ ] terraform support
-- [ ] argocd implementation
+- [x] add aws secret manager controller for secrets

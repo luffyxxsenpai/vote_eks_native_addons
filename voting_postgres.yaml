@@ -13,6 +13,7 @@ spec:
       labels:
         app: postgres
     spec:
+      serviceAccountName: vote-secrets-sa  # service account created for this application
       containers:
       - name: postgres
         image: postgres:latest
@@ -35,9 +36,14 @@ spec:
           value: /var/lib/postgresql/storage/pgdata         
         - name: POSTGRES_USER
           valueFrom:
-            configMapKeyRef:
-              name: vote-cm
+            secretKeyRef:
+              name: vote-postgres-secrets
               key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vote-postgres-secrets
+              key: POSTGRES_PASSWORD       
         - name: POSTGRES_DB
           valueFrom:
             configMapKeyRef:

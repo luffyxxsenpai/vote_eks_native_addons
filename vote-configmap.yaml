@@ -11,6 +11,5 @@ data:
   POSTGRES_HOST: "postgres"
   POSTGRES_PORT: "5432"
   POSTGRES_DATABASE: "postgres"
-  POSTGRES_USER: "postgres"
   OPTION_A: luffy 
   OPTION_B: zoro
