@@ -1,6 +1,8 @@
 # 5 Microservice application on AWS EKS with aws native setup
 
-- A Multi-Service [voting application](https://github.com/luffyxxsenpai/better-docker-voting-app) with real-time results, built with:
+![architecture-diagram](./setup.png)
+
+- A Multi-Service voting application with real-time results, built with:
 
   - Frontend: Python/Flask
   - Worker: .NET Core
